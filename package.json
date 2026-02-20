@@ -1,16 +1,20 @@
 {
   "name": "mote.ericeaglstun.com",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "predev": "node src/build/generate-manifest.js",
     "dev": "vite",
+    "prebuild": "node src/build/generate-manifest.js",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-markdown": "^9.0.3"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.4",
