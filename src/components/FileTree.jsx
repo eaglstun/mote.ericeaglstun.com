@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 function DirectoryNode({ node, onSelect, selectedFile }) {
   const containsSelected = selectedFile && selectedFile.startsWith(node.name + '/');
@@ -10,14 +10,11 @@ function DirectoryNode({ node, onSelect, selectedFile }) {
 
   return (
     <li>
-      <span
-        onClick={() => setExpanded(!expanded)}
-        style={{ cursor: 'pointer', userSelect: 'none' }}
-      >
+      <span className="file-tree__toggle" onClick={() => setExpanded(!expanded)}>
         {expanded ? '▼' : '▶'} {node.name}
       </span>
       {expanded && (
-        <ul style={{ listStyle: 'none', paddingLeft: 16 }}>
+        <ul className="file-tree__children">
           {node.children.map((child) => (
             <TreeNode key={child.name} node={child} onSelect={onSelect} selectedFile={selectedFile} />
           ))}
@@ -29,16 +26,11 @@ function DirectoryNode({ node, onSelect, selectedFile }) {
 
 function FileNode({ node, onSelect, selectedFile }) {
   const isActive = selectedFile === node.path;
+  const className = `file-tree__file${isActive ? ' file-tree__file--active' : ''}`;
+
   return (
     <li>
-      <span
-        onClick={() => onSelect(node.path)}
-        style={{
-          cursor: 'pointer',
-          userSelect: 'none',
-          fontWeight: isActive ? 'bold' : 'normal',
-        }}
-      >
+      <span className={className} onClick={() => onSelect(node.path)}>
         📄 {node.name}
       </span>
     </li>
@@ -63,8 +55,8 @@ export default function FileTree({ onSelect, selectedFile }) {
   }, []);
 
   return (
-    <nav style={{ padding: 16, overflowY: 'auto' }}>
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+    <nav className="file-tree">
+      <ul className="file-tree__list">
         {tree.map((node) => (
           <TreeNode key={node.name} node={node} onSelect={onSelect} selectedFile={selectedFile} />
         ))}

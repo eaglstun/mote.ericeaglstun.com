@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import FileTree from './components/FileTree';
 import MarkdownViewer from './components/MarkdownViewer';
+import './App.css';
 
 function filePathFromUrl() {
   const path = window.location.pathname.replace(/^\//, '');
@@ -22,11 +23,11 @@ function App() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <div style={{ width: 260, borderRight: '1px solid #ddd', flexShrink: 0, overflowY: 'auto' }}>
+    <div className="app">
+      <div className="app__sidebar">
         <FileTree onSelect={selectFile} selectedFile={selectedFile} />
       </div>
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div className="app__content">
         <MarkdownViewer filePath={selectedFile} />
       </div>
     </div>

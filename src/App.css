@@ -1,0 +1,58 @@
+html {
+  font-family: sans-serif;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.app__sidebar {
+  width: 260px;
+  border-right: 1px solid #ddd;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.app__content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* FileTree */
+.file-tree {
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.file-tree__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-tree__children {
+  list-style: none;
+  padding-left: 16px;
+}
+
+.file-tree__toggle,
+.file-tree__file {
+  cursor: pointer;
+  user-select: none;
+}
+
+.file-tree__file--active {
+  font-weight: bold;
+}
+
+/* MarkdownViewer */
+.markdown-viewer {
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.markdown-viewer--empty {
+  padding: 16px;
+  color: #888;
+}

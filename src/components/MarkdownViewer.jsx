@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Markdown from 'react-markdown';
 
 export default function MarkdownViewer({ filePath }) {
@@ -17,14 +17,14 @@ export default function MarkdownViewer({ filePath }) {
 
   if (!filePath) {
     return (
-      <div style={{ padding: 16, color: '#888' }}>
+      <div className="markdown-viewer--empty">
         Select a file to view its contents.
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 16, overflowY: 'auto' }}>
+    <div className="markdown-viewer">
       <Markdown>{content}</Markdown>
     </div>
   );
