@@ -33,30 +33,32 @@ async function buildTree(dir) {
         type: "directory",
         children: subtree,
       });
-    } else if (entry.name.endsWith(".md")) {
+    } else {
       const dest = join(CONTENT_DIR, relPath);
       await mkdir(join(dest, ".."), { recursive: true });
       await copyFile(fullPath, dest);
 
-      const fileStat = await stat(fullPath);
-      const content = await readFile(fullPath, "utf-8");
-      const titleMatch = content.match(/^#\s+(.+)/m);
-      const title = titleMatch
-        ? titleMatch[1]
-        : entry.name.replace(/\.md$/, "");
+      if (entry.name.endsWith(".md")) {
+        const fileStat = await stat(fullPath);
+        const content = await readFile(fullPath, "utf-8");
+        const titleMatch = content.match(/^#\s+(.+)/m);
+        const title = titleMatch
+          ? titleMatch[1]
+          : entry.name.replace(/\.md$/, "");
 
-      const bodyLines = content
-        .split("\n")
-        .filter((l) => l && !l.startsWith("#") && !l.startsWith("**"));
-      const excerpt = bodyLines.slice(0, 3).join(" ").slice(0, 280);
+        const bodyLines = content
+          .split("\n")
+          .filter((l) => l && !l.startsWith("#") && !l.startsWith("**"));
+        const excerpt = bodyLines.slice(0, 3).join(" ").slice(0, 280);
 
-      allFiles.push({ path: relPath, title, excerpt, mtime: fileStat.mtime });
+        allFiles.push({ path: relPath, title, excerpt, mtime: fileStat.mtime });
 
-      children.push({
-        name: entry.name,
-        type: "file",
-        path: relPath,
-      });
+        children.push({
+          name: entry.name,
+          type: "file",
+          path: relPath,
+        });
+      }
     }
   }
 

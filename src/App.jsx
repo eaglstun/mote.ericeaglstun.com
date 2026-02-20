@@ -39,7 +39,7 @@ function App() {
         <FileTree onSelect={selectFile} selectedFile={selectedFile} />
       </div>
       <div className="app__content">
-        <MarkdownViewer filePath={selectedFile} />
+        <MarkdownViewer filePath={selectedFile} onNavigate={selectFile} />
       </div>
     </div>
   );
