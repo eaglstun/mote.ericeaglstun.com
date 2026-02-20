@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-function DirectoryNode({ node, onSelect, selectedFile }) {
-  const containsSelected = selectedFile && selectedFile.startsWith(node.name + '/');
+function DirectoryNode({ node, path, onSelect, selectedFile }) {
+  const containsSelected = selectedFile && selectedFile.startsWith(path + '/');
   const [expanded, setExpanded] = useState(containsSelected);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ function DirectoryNode({ node, onSelect, selectedFile }) {
       {expanded && (
         <ul className="file-tree__children">
           {node.children.map((child) => (
-            <TreeNode key={child.name} node={child} onSelect={onSelect} selectedFile={selectedFile} />
+            <TreeNode key={child.name} node={child} parentPath={path} onSelect={onSelect} selectedFile={selectedFile} />
           ))}
         </ul>
       )}
@@ -37,9 +37,10 @@ function FileNode({ node, onSelect, selectedFile }) {
   );
 }
 
-function TreeNode({ node, onSelect, selectedFile }) {
+function TreeNode({ node, parentPath, onSelect, selectedFile }) {
+  const path = parentPath ? parentPath + '/' + node.name : node.name;
   if (node.type === 'directory') {
-    return <DirectoryNode node={node} onSelect={onSelect} selectedFile={selectedFile} />;
+    return <DirectoryNode node={node} path={path} onSelect={onSelect} selectedFile={selectedFile} />;
   }
   return <FileNode node={node} onSelect={onSelect} selectedFile={selectedFile} />;
 }
@@ -58,7 +59,7 @@ export default function FileTree({ onSelect, selectedFile }) {
     <nav className="file-tree">
       <ul className="file-tree__list">
         {tree.map((node) => (
-          <TreeNode key={node.name} node={node} onSelect={onSelect} selectedFile={selectedFile} />
+          <TreeNode key={node.name} node={node} parentPath="" onSelect={onSelect} selectedFile={selectedFile} />
         ))}
       </ul>
     </nav>
