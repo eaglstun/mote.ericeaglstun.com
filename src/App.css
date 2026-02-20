@@ -1,5 +1,33 @@
+@font-face {
+  font-family: mgopenmoderna;
+  src: url(https://cdn.pinecone.website/fonts/MgOpenModernaRegular.ttf)format("truetype");
+  font-style: normal
+}
+
+@font-face {
+  font-family: mgopenmodernabold;
+  src: url(https://cdn.pinecone.website/fonts/MgOpenModernaBold.ttf)format("truetype");
+  font-style: normal
+}
+
 html {
-  font-family: sans-serif;
+  font-family: mgopenmoderna, sans-serif;
+  line-height: 1.4;
+}
+
+strong {
+  font-family: mgopenmodernabold, sans-serif;
+  font-weight: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: mgopenmodernabold, sans-serif;
+  font-weight: normal;
 }
 
 .app {
@@ -43,7 +71,8 @@ html {
 }
 
 .file-tree__file--active {
-  font-weight: bold;
+  /* font-weight: bold; */
+  font-family: mgopenmodernabold, sans-serif;
 }
 
 /* MarkdownViewer */
