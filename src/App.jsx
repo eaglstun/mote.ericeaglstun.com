@@ -10,10 +10,12 @@ function filePathFromUrl() {
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(filePathFromUrl);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const selectFile = useCallback((filePath) => {
     setSelectedFile(filePath);
     window.history.pushState(null, '', '/' + filePath);
+    setSidebarOpen(false);
   }, []);
 
   useEffect(() => {
@@ -24,7 +26,14 @@ function App() {
 
   return (
     <div className="app">
-      <div className="app__sidebar">
+      <button
+        className="app__sidebar-toggle"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+      >
+        {sidebarOpen ? '✕' : '☰'}
+      </button>
+      <div className={`app__sidebar${sidebarOpen ? ' app__sidebar--open' : ''}`}>
         <FileTree onSelect={selectFile} selectedFile={selectedFile} />
       </div>
       <div className="app__content">
