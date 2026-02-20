@@ -36,7 +36,10 @@ async function buildTree(dir) {
       const titleMatch = content.match(/^#\s+(.+)/m);
       const title = titleMatch ? titleMatch[1] : entry.name.replace(/\.md$/, '');
 
-      allFiles.push({ path: relPath, title, mtime: fileStat.mtime });
+      const bodyLines = content.split('\n').filter((l) => l && !l.startsWith('#') && !l.startsWith('**'));
+      const excerpt = bodyLines.slice(0, 3).join(' ').slice(0, 280);
+
+      allFiles.push({ path: relPath, title, excerpt, mtime: fileStat.mtime });
 
       children.push({
         name: entry.name,
@@ -63,6 +66,7 @@ function buildRss(files) {
       <link>${escapeXml(link)}</link>
       <guid>${escapeXml(link)}</guid>
       <pubDate>${pubDate}</pubDate>
+      <description>${escapeXml(f.excerpt)}</description>
     </item>`;
   }).join('\n');
 
