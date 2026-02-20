@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function DirectoryNode({ node, path, onSelect, selectedFile }) {
-  const containsSelected = selectedFile && selectedFile.startsWith(path + '/');
+  const containsSelected = selectedFile && selectedFile.startsWith(path + "/");
   const [expanded, setExpanded] = useState(containsSelected);
 
   useEffect(() => {
@@ -10,13 +10,22 @@ function DirectoryNode({ node, path, onSelect, selectedFile }) {
 
   return (
     <li>
-      <span className="file-tree__toggle" onClick={() => setExpanded(!expanded)}>
-        {expanded ? '▼' : '▶'} {node.name}
+      <span
+        className="file-tree__toggle"
+        onClick={() => setExpanded(!expanded)}
+      >
+        {expanded ? "▼" : "▶"} {node.name}
       </span>
       {expanded && (
         <ul className="file-tree__children">
           {node.children.map((child) => (
-            <TreeNode key={child.name} node={child} parentPath={path} onSelect={onSelect} selectedFile={selectedFile} />
+            <TreeNode
+              key={child.name}
+              node={child}
+              parentPath={path}
+              onSelect={onSelect}
+              selectedFile={selectedFile}
+            />
           ))}
         </ul>
       )}
@@ -26,7 +35,7 @@ function DirectoryNode({ node, path, onSelect, selectedFile }) {
 
 function FileNode({ node, onSelect, selectedFile }) {
   const isActive = selectedFile === node.path;
-  const className = `file-tree__file${isActive ? ' file-tree__file--active' : ''}`;
+  const className = `file-tree__file${isActive ? " file-tree__file--active" : ""}`;
 
   return (
     <li>
@@ -38,18 +47,27 @@ function FileNode({ node, onSelect, selectedFile }) {
 }
 
 function TreeNode({ node, parentPath, onSelect, selectedFile }) {
-  const path = parentPath ? parentPath + '/' + node.name : node.name;
-  if (node.type === 'directory') {
-    return <DirectoryNode node={node} path={path} onSelect={onSelect} selectedFile={selectedFile} />;
+  const path = parentPath ? parentPath + "/" + node.name : node.name;
+  if (node.type === "directory") {
+    return (
+      <DirectoryNode
+        node={node}
+        path={path}
+        onSelect={onSelect}
+        selectedFile={selectedFile}
+      />
+    );
   }
-  return <FileNode node={node} onSelect={onSelect} selectedFile={selectedFile} />;
+  return (
+    <FileNode node={node} onSelect={onSelect} selectedFile={selectedFile} />
+  );
 }
 
 export default function FileTree({ onSelect, selectedFile }) {
   const [tree, setTree] = useState([]);
 
   useEffect(() => {
-    fetch('/manifest.json')
+    fetch("/manifest.json")
       .then((res) => res.json())
       .then((data) => setTree(data.tree))
       .catch(console.error);
@@ -59,7 +77,13 @@ export default function FileTree({ onSelect, selectedFile }) {
     <nav className="file-tree">
       <ul className="file-tree__list">
         {tree.map((node) => (
-          <TreeNode key={node.name} node={node} parentPath="" onSelect={onSelect} selectedFile={selectedFile} />
+          <TreeNode
+            key={node.name}
+            node={node}
+            parentPath=""
+            onSelect={onSelect}
+            selectedFile={selectedFile}
+          />
         ))}
       </ul>
     </nav>

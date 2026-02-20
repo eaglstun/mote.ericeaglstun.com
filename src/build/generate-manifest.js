@@ -1,13 +1,20 @@
-import { readdir, readFile, stat, mkdir, copyFile, writeFile } from 'node:fs/promises';
-import { join, relative } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import {
+  readdir,
+  readFile,
+  stat,
+  mkdir,
+  copyFile,
+  writeFile,
+} from "node:fs/promises";
+import { join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = join(__dirname, '..', '..');
-const WORKSPACE = join(ROOT, 'workspace-mote');
-const PUBLIC = join(ROOT, 'public');
-const CONTENT_DIR = join(PUBLIC, 'content');
-const SITE_URL = 'https://mote.ericeaglstun.com';
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const ROOT = join(__dirname, "..", "..");
+const WORKSPACE = join(ROOT, "workspace-mote");
+const PUBLIC = join(ROOT, "public");
+const CONTENT_DIR = join(PUBLIC, "content");
+const SITE_URL = "https://mote.ericeaglstun.com";
 
 const allFiles = [];
 
@@ -23,27 +30,31 @@ async function buildTree(dir) {
       const subtree = await buildTree(fullPath);
       children.push({
         name: entry.name,
-        type: 'directory',
+        type: "directory",
         children: subtree,
       });
-    } else if (entry.name.endsWith('.md')) {
+    } else if (entry.name.endsWith(".md")) {
       const dest = join(CONTENT_DIR, relPath);
-      await mkdir(join(dest, '..'), { recursive: true });
+      await mkdir(join(dest, ".."), { recursive: true });
       await copyFile(fullPath, dest);
 
       const fileStat = await stat(fullPath);
-      const content = await readFile(fullPath, 'utf-8');
+      const content = await readFile(fullPath, "utf-8");
       const titleMatch = content.match(/^#\s+(.+)/m);
-      const title = titleMatch ? titleMatch[1] : entry.name.replace(/\.md$/, '');
+      const title = titleMatch
+        ? titleMatch[1]
+        : entry.name.replace(/\.md$/, "");
 
-      const bodyLines = content.split('\n').filter((l) => l && !l.startsWith('#') && !l.startsWith('**'));
-      const excerpt = bodyLines.slice(0, 3).join(' ').slice(0, 280);
+      const bodyLines = content
+        .split("\n")
+        .filter((l) => l && !l.startsWith("#") && !l.startsWith("**"));
+      const excerpt = bodyLines.slice(0, 3).join(" ").slice(0, 280);
 
       allFiles.push({ path: relPath, title, excerpt, mtime: fileStat.mtime });
 
       children.push({
         name: entry.name,
-        type: 'file',
+        type: "file",
         path: relPath,
       });
     }
@@ -53,22 +64,28 @@ async function buildTree(dir) {
 }
 
 function escapeXml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function buildRss(files) {
   const sorted = [...files].sort((a, b) => b.mtime - a.mtime);
-  const items = sorted.map((f) => {
-    const link = `${SITE_URL}/${f.path}`;
-    const pubDate = f.mtime.toUTCString();
-    return `    <item>
+  const items = sorted
+    .map((f) => {
+      const link = `${SITE_URL}/${f.path}`;
+      const pubDate = f.mtime.toUTCString();
+      return `    <item>
       <title>${escapeXml(f.title)}</title>
       <link>${escapeXml(link)}</link>
       <guid>${escapeXml(link)}</guid>
       <pubDate>${pubDate}</pubDate>
       <description>${escapeXml(f.excerpt)}</description>
     </item>`;
-  }).join('\n');
+    })
+    .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -85,9 +102,12 @@ ${items}
 async function main() {
   await mkdir(CONTENT_DIR, { recursive: true });
   const tree = await buildTree(WORKSPACE);
-  await writeFile(join(PUBLIC, 'manifest.json'), JSON.stringify({ tree }, null, 2));
-  await writeFile(join(PUBLIC, 'rss.xml'), buildRss(allFiles));
-  console.log('Generated manifest.json, rss.xml, and copied content files.');
+  await writeFile(
+    join(PUBLIC, "manifest.json"),
+    JSON.stringify({ tree }, null, 2),
+  );
+  await writeFile(join(PUBLIC, "rss.xml"), buildRss(allFiles));
+  console.log("Generated manifest.json, rss.xml, and copied content files.");
 }
 
 main().catch((err) => {

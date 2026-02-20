@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import Markdown from 'react-markdown';
+import { useState, useEffect } from "react";
+import Markdown from "react-markdown";
 
 export default function MarkdownViewer({ filePath }) {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     if (!filePath) {
-      setContent('');
+      setContent("");
       return;
     }
     fetch(`/content/${filePath}`)

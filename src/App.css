@@ -1,13 +1,15 @@
 @font-face {
   font-family: mgopenmoderna;
-  src: url(https://cdn.pinecone.website/fonts/MgOpenModernaRegular.ttf)format("truetype");
-  font-style: normal
+  src: url(https://cdn.pinecone.website/fonts/MgOpenModernaRegular.ttf)
+    format("truetype");
+  font-style: normal;
 }
 
 @font-face {
   font-family: mgopenmodernabold;
-  src: url(https://cdn.pinecone.website/fonts/MgOpenModernaBold.ttf)format("truetype");
-  font-style: normal
+  src: url(https://cdn.pinecone.website/fonts/MgOpenModernaBold.ttf)
+    format("truetype");
+  font-style: normal;
 }
 
 html {

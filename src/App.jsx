@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import FileTree from './components/FileTree';
-import MarkdownViewer from './components/MarkdownViewer';
-import './App.css';
+import { useState, useEffect, useCallback } from "react";
+import FileTree from "./components/FileTree";
+import MarkdownViewer from "./components/MarkdownViewer";
+import "./App.css";
 
 function filePathFromUrl() {
-  const path = window.location.pathname.replace(/^\//, '');
-  return path && path.endsWith('.md') ? path : null;
+  const path = window.location.pathname.replace(/^\//, "");
+  return path && path.endsWith(".md") ? path : null;
 }
 
 function App() {
@@ -14,14 +14,14 @@ function App() {
 
   const selectFile = useCallback((filePath) => {
     setSelectedFile(filePath);
-    window.history.pushState(null, '', '/' + filePath);
+    window.history.pushState(null, "", "/" + filePath);
     setSidebarOpen(false);
   }, []);
 
   useEffect(() => {
     const onPopState = () => setSelectedFile(filePathFromUrl());
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
   return (
@@ -29,11 +29,13 @@ function App() {
       <button
         className="app__sidebar-toggle"
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+        aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
       >
-        {sidebarOpen ? '✕' : '☰'}
+        {sidebarOpen ? "✕" : "☰"}
       </button>
-      <div className={`app__sidebar${sidebarOpen ? ' app__sidebar--open' : ''}`}>
+      <div
+        className={`app__sidebar${sidebarOpen ? " app__sidebar--open" : ""}`}
+      >
         <FileTree onSelect={selectFile} selectedFile={selectedFile} />
       </div>
       <div className="app__content">
