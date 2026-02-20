@@ -1,4 +1,4 @@
-import { readdir, stat, mkdir, copyFile, writeFile } from 'node:fs/promises';
+import { readdir, readFile, stat, mkdir, copyFile, writeFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,6 +7,9 @@ const ROOT = join(__dirname, '..', '..');
 const WORKSPACE = join(ROOT, 'workspace-mote');
 const PUBLIC = join(ROOT, 'public');
 const CONTENT_DIR = join(PUBLIC, 'content');
+const SITE_URL = 'https://mote.ericeaglstun.com';
+
+const allFiles = [];
 
 async function buildTree(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -28,6 +31,13 @@ async function buildTree(dir) {
       await mkdir(join(dest, '..'), { recursive: true });
       await copyFile(fullPath, dest);
 
+      const fileStat = await stat(fullPath);
+      const content = await readFile(fullPath, 'utf-8');
+      const titleMatch = content.match(/^#\s+(.+)/m);
+      const title = titleMatch ? titleMatch[1] : entry.name.replace(/\.md$/, '');
+
+      allFiles.push({ path: relPath, title, mtime: fileStat.mtime });
+
       children.push({
         name: entry.name,
         type: 'file',
@@ -39,11 +49,41 @@ async function buildTree(dir) {
   return children;
 }
 
+function escapeXml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function buildRss(files) {
+  const sorted = [...files].sort((a, b) => b.mtime - a.mtime);
+  const items = sorted.map((f) => {
+    const link = `${SITE_URL}/${f.path}`;
+    const pubDate = f.mtime.toUTCString();
+    return `    <item>
+      <title>${escapeXml(f.title)}</title>
+      <link>${escapeXml(link)}</link>
+      <guid>${escapeXml(link)}</guid>
+      <pubDate>${pubDate}</pubDate>
+    </item>`;
+  }).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>mote</title>
+    <link>${SITE_URL}</link>
+    <description>mote — a collection of writings</description>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+${items}
+  </channel>
+</rss>`;
+}
+
 async function main() {
   await mkdir(CONTENT_DIR, { recursive: true });
   const tree = await buildTree(WORKSPACE);
   await writeFile(join(PUBLIC, 'manifest.json'), JSON.stringify({ tree }, null, 2));
-  console.log('Generated manifest.json and copied content files.');
+  await writeFile(join(PUBLIC, 'rss.xml'), buildRss(allFiles));
+  console.log('Generated manifest.json, rss.xml, and copied content files.');
 }
 
 main().catch((err) => {
