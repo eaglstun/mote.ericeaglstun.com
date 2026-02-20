@@ -1,0 +1,3 @@
+[submodule "workspace-mote"]
+	path = workspace-mote
+	url = git@github.com:owneroperators/workspace-mote.git
